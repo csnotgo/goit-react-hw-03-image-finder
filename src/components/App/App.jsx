@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Searchbar } from 'components/Searchbar/Searchbar';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
-import { fetchImages } from 'components/Services/ImageApi';
+import { fetchImages } from 'Services/ImageApi'
 
 export class App extends Component {
   state = {
@@ -15,7 +15,7 @@ export class App extends Component {
   componentDidUpdate(_, prevState) {
     const { searchRequest, gallery, page } = this.state;
 
-    if (prevState.page !== page) {
+    if (prevState.searchRequest === searchRequest && prevState.page !== page) {
       fetchImages(searchRequest, page)
         .then(response => {
           if (response.status === 400) {
