@@ -13,8 +13,7 @@ export class Searchbar extends Component {
       alert('Please, enter something');
       return;
     }
-    this.props.onSubmitFetch(this.state.search, 1)
-    this.props.onSubmit(this.state.search, 1);
+    this.props.onSubmit(this.state.search);
     this.reset();
     window.scrollTo(0,1)
   };

@@ -7,7 +7,7 @@ export class App extends Component {
   state = {
     searchRequest: '',
     gallery: [],
-    page: 0,
+    page: 1,
     status: 'idle',
     error: null,
   };
@@ -15,7 +15,7 @@ export class App extends Component {
   componentDidUpdate(_, prevState) {
     const { searchRequest, gallery, page } = this.state;
 
-    if (prevState.searchRequest === searchRequest && prevState.page !== page) {
+    if (prevState.searchRequest !== searchRequest || prevState.page !== page) {
       fetchImages(searchRequest, page)
         .then(response => {
           if (response.status === 400) {
@@ -30,7 +30,7 @@ export class App extends Component {
         .then(data => {
           const hits = data.hits;
           this.setState({
-            gallery: [...gallery, ...hits],
+            gallery: prevState.searchRequest !== searchRequest ? [...hits] : [...gallery, ...hits],
             status: 'resolved',
           });
 
@@ -54,30 +54,11 @@ export class App extends Component {
     }));
   };
 
-  onSubmitSearchRequest = (word, page) => {
+  onSubmitSearchRequest = (word) => {
     this.setState({
       searchRequest: word,
-      page: page,
+      page: 1,
     });
-  };
-
-  onSubmitFetch = (search, page) => {
-    this.setState({ status: 'pending' });
-
-    fetchImages(search, page)
-      .then(response => response.json())
-      .then(data => {
-        const hits = data.hits;
-        this.setState({
-          gallery: [...hits],
-          status: 'resolved',
-        });
-
-        if (data.hits.length === 0) {
-          return Promise.reject(new Error(`no results found ${search}`));
-        }
-      })
-      .catch(error => this.setState({ status: 'rejected', error: error }));
   };
 
   render() {
