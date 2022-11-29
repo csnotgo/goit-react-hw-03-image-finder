@@ -6,6 +6,21 @@ import { Backdrop, Content } from './Modal.styled';
 const modalPortal = document.getElementById('modal-root');
 
 export class Modal extends Component {
+
+  componentDidMount() {
+  window.addEventListener('keydown', this.closeModalOnEscape);
+  }
+  
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.closeModalOnEscape);
+  }
+
+  closeModalOnEscape = (e) => {
+  if (e.code === 'Escape') {
+    this.props.onClose()
+  }
+  }
+  
   render() {
     const { children, onClose } = this.props;
     return createPortal(
